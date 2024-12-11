@@ -1,0 +1,29 @@
+# Archivos de entorno virtual
+venv/
+instance/
+
+# Archivos de compilación de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+
+# Archivos de configuración sensibles
+.env
+
+# Archivos de logs
+*.log
+
+# Archivos temporales de editor (por ejemplo, VS Code)
+.vscode/
+
+# Archivos temporales de sistema operativo (por ejemplo, macOS)
+.DS_Store
+
+# Archivos de pruebas
+tests/__pycache__/
+tests/*.pyc
+
+# Otros archivos innecesarios
+*.sqlite

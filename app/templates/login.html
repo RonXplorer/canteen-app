@@ -1,0 +1,24 @@
+
+{% extends 'base.html' %}
+{% block title %}
+Iniciar sesión
+{% endblock %}
+{% block content %}
+<section class="register section">
+  <div class="register__container container">
+    <form method="POST" class="register__form">
+      {{ form.hidden_tag() }}
+      <h2 class="section__title" >Inicia sesión</h2>
+      <div class="register__group">
+        {{ form.email.label(class="register__label") }}
+        {{ form.email(size=20, class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.password.label(class="register__label") }}
+        {{ form.password(class="register__input") }}
+      </div>
+      {{ form.submit(class="register__button register__button--primary")}}
+    </form>
+  </div>
+</section>
+{% endblock %}

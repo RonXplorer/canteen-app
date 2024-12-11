@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Mis Órdenes{% endblock %}
+{% block content %}
+<section class="orders section">
+    <h1 class="section__title">Mis Órdenes</h1>
+    <div class="table-container container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Orden</th>
+                    <th>Plato</th>
+                    <th>Fecha</th>
+                    <th>Cantidad</th>
+                    <th>Estado</th>
+                    <th>Proveedor</th>
+                    <th>Entrega en</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.dish.name }}</td>
+                    <td>{{ order.date }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>{{ order.dish.food_post.name }}</td>
+                    <td>{{ order.deliver_to }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

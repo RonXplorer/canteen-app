@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Crear nueva comida {% endblock %}
+{% block content %}
+<section class="register section">
+  <div class="register__container container">
+    <form method="POST" class="register__form" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <h2 class="section__title" >Crea nueva comida</h2>
+      <div class="register__group">
+        {{ form.name.label(class="register__label") }}
+        {{ form.name(class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.description.label(class="register__label") }}
+        {{ form.description(class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.price.label(class="register__label") }}
+        {{ form.price(class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.image_file.label(class="register__label") }}
+        {{ form.image_file(class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.available_start_date.label(class="register__label") }}
+        {{ form.available_start_date(class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.available_end_date.label(class="register__label") }}
+        {{ form.available_end_date(class="register__input") }}
+      </div>
+      {{ form.submit(class="register__button register__button--primary")}}
+    </form>
+  </div>
+</section>
+{% endblock %}

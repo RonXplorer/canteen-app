@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear cuenta{% endblock %} 
+
+{% block content %}
+<section class="register section">
+  <div class="register__container container">
+    <form method="POST" class="register__form">
+      {{ form.hidden_tag() }}
+      <h2 class="section__title">Por favor crea tu cuenta</h2>
+
+      <div class="register__group">
+        {{ form.name.label(class="register__label") }}
+        {{ form.name(class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.email.label(class="register__label") }}
+        {{ form.email(class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.password1.label(class="register__label") }}
+        {{ form.password1(class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.password2.label(class="register__label") }}
+        {{ form.password2(class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.role.label(class="register__label") }}
+        {{ form.role(class="register__selector") }}  
+      </div>
+
+      <div class="register__link">
+        <h6 class="register__link-title">¿Ya tienes una cuenta?</h6>
+        <a href="{{ url_for('login') }}" class="register__link-action">Inicia sesión</a>
+      </div>
+
+      {{ form.submit(class="register__button register__button--primary") }}
+    </form>
+  </div>
+</section>
+{% endblock %}

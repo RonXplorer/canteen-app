@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+
+    <!--=== REMIXICONS ===-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/remixicon.css') }}" />
+    <link rel="shortcut icon" href="../static/img/Logo-Metor-02.avif" type="image/x-icon">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}"> -->
+    <title>{% block title %} {% endblock %}</title>
+  </head>
+  <body>
+    <!--=== HEADER ===-->
+    <header class="header" id="header">
+      <nav class="nav container">
+        <a href="{{ url_for('index') }}" class="nav__logo">
+          <img src="{{ url_for('static', filename='img/Logo-Metor-02.avif') }}" alt="Logo Metor">
+        </a>
+
+        <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+            <li class="nav__item">
+              <a href="{{ url_for('index') }}" class="nav__link">Home</a>
+            </li>
+            {% if current_user.role == 'provider' %}
+            <li class="nav__item">
+              <a href="{{ url_for('my_dishes') }}" class="nav__link">Mis platos</a>
+            </li>
+            <li class="nav__item">
+              <a href="{{ url_for('manage_orders') }}" class="nav__link">Mis ordenes</a>
+            </li>
+            <li class="nav__item">
+              <a href="{{ url_for('create_dish') }}" class="nav__link">Crear plato</a>
+            </li>
+            {% elif current_user.role == 'worker' %}
+            <li class="nav__item">
+              <a href="{{ url_for('available_dishes') }}" class="nav__link">Pide un plato</a>
+            </li>
+            <li class="nav__item">
+              <a href="{{ url_for('worker_orders') }}" class="nav__link">Mis pedidos</a>
+            </li>
+            {% elif current_user.role == 'admin' %}
+            <li class="nav__item">
+              <a href="{{ url_for('admin_dashboard') }}" class="nav__link">Manejar usuarios</a>
+            </li>
+
+            <li class="nav__item">
+              <a href="{{ url_for('list_providers') }}" class="nav__link">Proveedores</a>
+            </li>
+            {% endif %}
+
+            {% if current_user.is_authenticated %}
+              <li class="nav__item">
+                <a href="{{ url_for('logout') }}" class="nav__link">Cerrar sesión</a>
+              </li>
+            {% else %}
+              <li class="nav__item">
+                <a href="{{ url_for('login') }}" class="nav__link">Iniciar sesión</a>
+              </li>
+
+              <li class="nav__item">
+                <a href="{{ url_for('register') }}" class="nav__link">Registrarse</a>
+              </li>
+            {% endif %}
+          </ul>
+
+          <!-- Close button -->
+          <div class="nav__close" id="nav-close">
+            <i class="ri-close-line"></i>
+          </div>
+        </div>
+        <!-- Toggle button -->
+        <div class="nav__toggle" id="nav-toggle">
+          <i class="ri-menu-fill"></i>
+        </div>
+      </nav>
+    </header>
+    <!--=== MAIN ===-->
+    <main class="main">
+      <!--=== Get flashed messages ===-->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash-message flash-message--{{ category }}">
+              <p class="flash-message__p">{{ message }}</p>
+              <div class="flash-message__close" id="flash-close">
+                <i class="ri-close-line"></i>
+              </div>
+            </div>
+          {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+    
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <!--=== SCROLL UP ===-->
+    <a href="#" class="scrollup" id="scroll-up">
+      <i class="ri-arrow-up-line"></i>
+    </a>
+
+    <!--=== MAIN SCRIPT ===-->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>

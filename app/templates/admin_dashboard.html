@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios Registrados{% endblock %}
+{% block content %}
+<section class="users section">
+  <h1 class="section__title">Usuarios Registrados</h1>
+  <div class="table-container container">
+      <table class="table">
+          <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Validado</th>
+                  <th>Acciones</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for user in users %}
+              <tr>
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.role }}</td>
+                  <td>{{ 'Sí' if user.is_validated else 'No' }}</td>
+                  <td>
+                      {% if not user.is_validated %}
+                      <form action="{{ url_for('validar_usuario', user_id=user.id) }}" method="POST" style="display:inline;">
+                          <button type="submit" class="dish__button dish__button--primary">Validar</button>
+                      </form>
+                      {% else %}
+                      <form action="{{ url_for('revocar_usuario', user_id=user.id) }}" method="POST" style="display:inline;">
+                          <button type="submit" class="dish__button dish__button--secondary">Quitar validación</button>
+                      </form>
+                      {% endif %}
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  </div>
+</section>
+{% endblock %}

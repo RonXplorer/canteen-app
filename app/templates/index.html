@@ -1,0 +1,32 @@
+{% extends 'base.html' %} {% block title %}Inicio{% endblock %} {% block content
+%}
+<section class="home section" id="home">
+  <img
+    src="../static/img/be7bf2_7de986fecbeb49f18dd0a0b3219f9f5e~mv2.avif"
+    alt="A bridge entering to the woods"
+    class="home__bg"
+  />
+  <div class="home__shadow"></div>
+
+  <div class="home__container container grid">
+    <div class="home__data">
+      <h1 class="home__title">
+        Bienvenido a Comedor Metor
+      </h1>
+
+      <div class="home__buttons">
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}" class="button home__button">dashboard</a>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="button home__button">
+          Iniciar sesión <i class="ri-arrow-right-line"></i>
+        </a>
+        <a href="{{ url_for('register') }}" class="button home__button">
+          Registrarse <i class="ri-arrow-right-line"></i>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

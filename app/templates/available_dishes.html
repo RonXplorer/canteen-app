@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Platos disponibles{% endblock %}
+{% block content %}
+<!--=== DISH ===-->
+<section class="dish section" id="dish">
+  <h2 class="section__title">
+    Adquiere tu comida <br />
+    Disfruta!
+  </h2>
+  <div class="dish__container container grid">
+    {% for dish in available_dishes %}
+    <article class="dish__card">
+      <div class="dish__group">
+        <div class="dish__image">
+          {% if dish.img_url %}
+          <img
+            src="{{ url_for('static', filename='uploads/' + dish.img_url) }}"
+            alt="dish image"
+            class="dish__img"
+          />
+          {% endif %}
+          <div class="dish__shadow"></div>
+        </div>
+  
+        <div class="dish__info">
+          <h2 class="dish__title">{{ dish.name }}</h2>
+          <p class="dish__description">{{ dish.description }}</p>
+          <div class="dish__price">
+            <p>precio:</p>
+            <span>{{ dish.price }}</span>
+            <i class="ri-money-dollar-box-fill"></i>
+          </div>
+          <div class="dish__provider">
+            <p class="provider-label">proveedor:</p>
+            <span class="provider-name">{{ dish.food_post.name }}</span>
+        </div>
+        </div>
+      </div>
+
+
+      <form method="POST" action="{{ url_for('order_food', dish_id=dish.id) }}" class="dish__form">
+        <div class="dish__group">
+          <label for="quantity">Cantidad:</label>
+          <input type="number" name="quantity" value="1" min="1" required>
+        </div>
+        
+        <div class="dish__group">
+          <label for="location">Entrega en:</label>
+          <select name="location" id="location" required>
+              <option value="Planta A">Planta A</option>
+              <option value="Planta B">Planta B</option>
+          </select>
+        </div>
+        
+        <div class="dish__group">
+          <label for="date">Selecciona una fecha:</label>
+          <input type="date" id="date" name="date"
+                 min="{{ dish.available_start_date }}"
+                 max="{{ dish.available_end_date }}"
+                 required>
+        </div>
+        <button type="submit" class="dish__button dish__button--primary">Realizar Pedido</button>
+      </form>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

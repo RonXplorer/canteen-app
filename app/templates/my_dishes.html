@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Tus platos{% endblock %}
+{% block content %}
+<section class="dish section">
+    <h2 class="section__title">Tus platos</h2>
+    <div class="dish__data">
+        <h3 class="dish__subtitle">quieres crear un nuevo plato?</h3>
+        <a href="{{ url_for('create_dish') }}">Crear plato</a>
+    </div>
+    <div class="dish__container container grid">
+        {% for dish in dishes %}
+        <article class="dish__card">
+            <div class="dish__image">
+                {% if dish.img_url %}
+                <img src="{{ url_for('static', filename='uploads/' + dish.img_url) }}" class="dish__img" alt="{{ dish.name }}">
+                {% endif %}
+                <div class="dish__shadow"></div>
+            </div>
+            <div class="dish__info">
+
+                <h2 class="dish__title">{{ dish.name }}</h2>
+    
+                <div class="dish__price">
+                    <p>precio:</p>
+                    <i class="ri-money-dollar-box-fill"></i>
+                    <span>{{ dish.price }}</span>
+                </div>
+            </div>
+
+            <form action="{{ url_for('delete_dish', dish_id=dish.id) }}" method="POST" class="delete-dish-form">
+                <input type="hidden" name="dish_id" value="{{ dish.id }}">
+                <input type="submit" value="borrar" class="dish__button dish__button--secondary">
+            </form>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

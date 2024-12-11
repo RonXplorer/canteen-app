@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Gestionar Órdenes{% endblock %}
+{% block content %}
+<section class="orders section">
+    <h1 class="section__title">Gestionar Órdenes</h1>
+    <div class="table-container container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Orden</th>
+                    <th>Plato</th>
+                    <th>Cantidad</th>
+                    <th>Trabajador</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Actualizar Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.dish.name }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>{{ order.worker.name }}</td>
+                    <td>{{ order.date }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>
+                        <form method="POST">
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <select name="status" class="form-control">
+                                <option value="pendiente" {% if order.status == "pendiente" %}selected{% endif %}>Pendiente</option>
+                                <option value="aprobada" {% if order.status == "aprobada" %}selected{% endif %}>Aprobada</option>
+                                <option value="rechazada" {% if order.status == "rechazada" %}selected{% endif %}>Rechazada</option>
+                            </select>
+                            <button type="submit" class="orders__button orders__button--primary">Actualizar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
