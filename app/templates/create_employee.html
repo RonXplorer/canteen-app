@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Empleado{% endblock %} 
+
+{% block content %}
+<section class="register section">
+  <div class="register__container container">
+    <form method="POST" class="register__form">
+      {{ form.hidden_tag() }}
+      <h2 class="section__title">Por favor crea el nuevo empleado</h2>
+
+      <div class="register__group">
+        {{ form.name.label(class="register__label") }}
+        {{ form.name(class="register__input") }}
+      </div>
+      <div class="register__group">
+        {{ form.national_id.label(class="register__label") }}
+        {{ form.national_id(class="register__input") }}
+      </div>
+      {{ form.submit(class="register__button register__button--primary") }}
+    </form>
+  </div>
+</section>
+{% endblock %}

@@ -11,11 +11,18 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
+    national_id = db.Column(db.String(10), nullable=False, unique=True)  # Cédula de identidad
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(length=200), nullable=False)
     role = db.Column(db.String(50), nullable=False)  # worker, provider, finance
     is_validated = db.Column(db.Boolean, default=False)
+
+    # Relación con platos (cascada de eliminación)
+    dishes = db.relationship('Dish', backref='user_provider', cascade="all, delete-orphan")
+
+    # Relación con órdenes
+    orders = db.relationship('Order', backref='assigned_worker', cascade="all, delete-orphan")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -37,14 +44,16 @@ class Dish(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     img_url = db.Column(db.String(200), nullable=True)
 
-    food_post = db.relationship('User', backref='dishes')
+    # Relación con el usuario proveedor
+    provider = db.relationship('User', backref='provider_dishes')
     orders_list = db.relationship('Order', backref='dish_detail', cascade="all, delete")
     available_start_date = db.Column(db.Date, nullable=False)
     available_end_date = db.Column(db.Date, nullable=False)
 
     def __repr__(self):
         return f"<Dish {self.name}>"
-    
+
+# Modelo de Órdenes
 class Order(db.Model):
     __tablename__ = 'orders'
     id = db.Column(db.Integer, primary_key=True)
@@ -57,4 +66,14 @@ class Order(db.Model):
     status = db.Column(db.String(20), default='pendiente')
 
     dish = db.relationship('Dish', backref='orders')
-    worker = db.relationship('User', backref='orders')
+    worker = db.relationship('User', backref='assigned_orders')  # Cambia 'orders' a 'assigned_orders'
+
+# Modelo Empleados
+class Employee(db.Model):
+    __tablename__ = 'employees'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    national_id = db.Column(db.String(10), unique=True, nullable=False)  # Cédula de identidad
+
+    def __repr__(self):
+        return f"<Employee {self.name}>"

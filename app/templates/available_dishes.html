@@ -32,7 +32,7 @@
           </div>
           <div class="dish__provider">
             <p class="provider-label">proveedor:</p>
-            <span class="provider-name">{{ dish.food_post.name }}</span>
+            <span class="provider-name">{{ dish.provider.name }}</span>
         </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
       <form method="POST" action="{{ url_for('order_food', dish_id=dish.id) }}" class="dish__form">
         <div class="dish__group">
           <label for="quantity">Cantidad:</label>
-          <input type="number" name="quantity" value="1" min="1" required>
+          <input type="number" name="quantity" value="1" min="1" required disabled>
         </div>
         
         <div class="dish__group">
@@ -49,6 +49,7 @@
           <select name="location" id="location" required>
               <option value="Planta A">Planta A</option>
               <option value="Planta B">Planta B</option>
+              <option value="Atlántico">Atlántico</option>
           </select>
         </div>
         

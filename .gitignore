@@ -2,6 +2,12 @@
 venv/
 instance/
 
+# Ignorar todo dentro de la carpeta uploads
+/app/static/uploads/*
+
+# Pero no ignorar la carpeta uploads en sí
+/app/static/uploads/
+
 # Archivos de compilación de Python
 __pycache__/
 *.pyc
