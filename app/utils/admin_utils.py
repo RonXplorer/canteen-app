@@ -10,7 +10,8 @@ def create_admin():
             name=os.getenv('ADMIN_USERNAME'),
             email=os.getenv('ADMIN_EMAIL'),
             role='admin',
-            is_validated=True
+            is_validated=True,
+            national_id="1234567801"
         )
         admin.set_password(os.getenv('ADMIN_PASSWORD'))  # Usa una función de hashing
         db.session.add(admin)

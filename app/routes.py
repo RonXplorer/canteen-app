@@ -1,7 +1,7 @@
 from flask import abort, flash, redirect, render_template, url_for, request, send_file
 from app import app, db
-from app.models import User, Dish, Order
-from app.forms import LoginForm, RegisterForm, DishForm
+from app.models import User, Dish, Order, Employee
+from app.forms import LoginForm, RegisterForm, DishForm, ChangePasswordForm, AddEmployeeForm
 from flask_login import login_user, logout_user, login_required, current_user
 from app.utils.decorators import role_required
 import os
@@ -43,6 +43,7 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         user_to_create = User(name=form.name.data,
+                              national_id=form.national_id.data,
                               email=form.email.data,
                               role=form.role.data)
         user_to_create.set_password(password=form.password1.data)
@@ -82,10 +83,92 @@ def logout():
     flash('Sesión cerrada exitosamente!', category='info')
     return redirect(url_for('index'))
 
+@app.route('/delete_account', methods=['POST'])
+@login_required
+def delete_account():
+    db.session.delete(current_user)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+@role_required('admin')
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+
+    flash('¡Usuario eliminado exitosamente!', category='success')
+    return redirect(url_for('index'))  # Redirigir a la página de administración
+
+
+@app.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        current_password = form.current_password.data
+        new_password = form.new_password.data
+        confirm_password = form.confirm_password.data
+
+        # Verificar si la contraseña actual es correcta
+        if not current_user.check_password(current_password):
+            flash('La contraseña actual es incorrecta.', category='danger')
+            return redirect(url_for('change_password'))
+        
+        # Establecer la nueva contraseña
+        current_user.set_password(new_password)
+
+        # Guardar los cambios en la base de datos
+        db.session.commit()
+        
+        flash('Contraseña cambiada exitosamente!', category='success')
+        return redirect(url_for('dashboard'))
+    
+    return render_template('change_password.html', form=form)
+
+@app.route('/configuration')
+@login_required
+def configuration():
+    return render_template('configuration.html')
+
+
 @app.route('/admin_dashboard')
 @role_required('admin')
 def admin_dashboard():
     return render_template("admin_dashboard.html", users=User.query.all())
+
+@app.route('/manage_employees')
+@role_required('admin')
+def manage_employees():
+    employees = Employee.query.all()
+    return render_template('manage_employees.html', employees=employees)
+
+@app.route('/create_employee', methods=['GET', 'POST'])
+@role_required('admin')
+def create_employee():
+    form = AddEmployeeForm()
+    if form.validate_on_submit():
+        employee_to_create = Employee(name=form.name.data,
+                                      national_id=form.national_id.data)
+        db.session.add(employee_to_create)
+        db.session.commit()
+
+        flash(f'Empleado agregado exitosamente!', category='success')
+        return redirect(url_for('manage_employees'))
+    if form.errors != {}: # Si hay errores en el formulario
+        for err_msg in form.errors.values():
+            flash(f'Ooops! ocurrió un error: {err_msg}', category='danger')
+
+    return render_template('create_employee.html', form=form)
+
+@app.route('/delete_employee/<int:employee_id>', methods=['POST'])
+@role_required('admin')
+def delete_employee(employee_id):
+    employee = Employee.query.get_or_404(employee_id)
+    db.session.delete(employee)
+    db.session.commit()
+    flash('Empleado eliminado!', category='success')
+    return redirect(url_for('manage_employees'))
 
 @app.route('/available_dishes')
 @role_required('worker')
@@ -192,7 +275,6 @@ def delete_dish(dish_id):
 @app.route('/order-food/<int:dish_id>', methods=['POST'])
 @role_required('worker')
 def order_food(dish_id):
-    #TODO: limitar la cantidad de pedidos que un trabajador puede hacer 
     if current_user.role != 'worker':
         flash('No tienes permiso para realizar esta acción.', 'danger')
         return redirect(url_for('index'))
@@ -205,34 +287,22 @@ def order_food(dish_id):
     if not (dish.available_start_date <= selected_date <= dish.available_end_date):
         flash('La fecha seleccionada no está dentro del rango establecido por el proveedor.', 'danger')
         return redirect(url_for('available_dishes'))
-    
-    today = datetime.today().date()
-    week_start = today - timedelta(days=today.weekday())  # Lunes
-    week_end = week_start + timedelta(days=6)  # Domingo
 
-    if not (week_start <= selected_date <= week_end):
-        flash('La fecha seleccionada debe estar dentro de la misma semana.', 'danger')
-        return redirect(url_for('available_dishes'))
-    
-    quantity = request.form.get('quantity', 1, type=int)
-    if quantity <= 0:
-        flash('La cantidad debe ser mayor a cero.', 'danger')
+    # Verificar si el trabajador ya ha pedido en esa fecha
+    existing_order = Order.query.filter_by(worker_id=current_user.id, date=selected_date).first()
+    if existing_order:
+        flash(f'Ya has realizado un pedido para el día {selected_date}. Solo puedes pedir una vez por día.', 'danger')
         return redirect(url_for('available_dishes'))
 
-    location = request.form.get('location')
+    # Limitar la cantidad de pedido a 1
+    quantity = 1  # Siempre será 1, no se permite cantidad mayor
 
-    
-    order = Order(
-        dish_id=dish.id,
-        worker_id=current_user.id,
-        quantity=quantity,
-        deliver_to=location,
-        date=selected_date
-    )
+    # Crear la orden
+    order = Order(dish_id=dish.id, worker_id=current_user.id, quantity=quantity, date=selected_date, deliver_to=request.form['location'])
     db.session.add(order)
     db.session.commit()
-    print(date)
-    flash('¡Pedido realizado exitosamente!', 'success')
+
+    flash('¡Pedido realizado con éxito!', 'success')
     return redirect(url_for('available_dishes'))
 
 
@@ -307,7 +377,7 @@ def generate_report():
     data = {
         "Pedido ID": [order.id for order in orders],
         "Trabajador": [order.worker.name for order in orders],
-        "Proveedor": [order.dish.food_post.name for order in orders],
+        "Proveedor": [order.dish.provider.name for order in orders],
         "Fecha": [order.date for order in orders],
         "Cantidad": [order.quantity for order in orders],
         "Ubicación": [order.deliver_to for order in orders],

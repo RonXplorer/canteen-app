@@ -632,8 +632,85 @@ img {
   color: #fff;
 }
 
+/* General container styling */
+.configuration__container {
+  padding: 2rem;
+}
 
+/* Responsive list styling */
+.configuration__list {
+  margin-top: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1.5rem; /* Reduce el espacio entre elementos en pantallas pequeñas */
+  list-style: none;
+  padding: 0;
+}
 
+/* Item styling */
+.configuration__item {
+  flex: 1 1 250px; /* Los items serán responsivos y ocuparán al menos 250px */
+  max-width: 350px; /* Limita el tamaño máximo en pantallas grandes */
+}
+
+/* Button styling */
+.configuration__button {
+  padding: 1rem 1.5rem; /* Botones más cómodos en dispositivos táctiles */
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #007BFF;
+  color: #fff;
+  text-align: center;
+  display: block; /* Asegura que se comporte como bloque completo */
+  width: 100%; /* Llenar todo el ancho del item */
+}
+
+/* Delete button variation */
+.configuration__button--delete {
+  background-color: var(--red-1);
+}
+
+/* Hover effects */
+.configuration__button:hover {
+  background-color: #0056b3; /* Oscurece el azul en hover */
+}
+
+.configuration__button--delete:hover {
+  background-color: var(--red-2); /* Oscurece el rojo en hover */
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+  .configuration__list {
+    gap: 1rem; /* Reduce espacio en pantallas más pequeñas */
+  }
+
+  .configuration__item {
+    flex: 1 1 100%; /* Cada item ocupa el 100% del ancho */
+  }
+
+  .configuration__button {
+    font-size: 0.9rem; /* Botones ligeramente más pequeños */
+    padding: 0.8rem 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .configuration__list {
+    margin-top: 2rem;
+  }
+
+  .configuration__button {
+    font-size: 0.85rem; /* Reduce aún más el tamaño del texto */
+    padding: 0.7rem 1rem;
+  }
+}
 
 
 /*=== SCROLL UP ===*/
@@ -782,7 +859,7 @@ img {
 
   .nav__list {
     flex-direction: row;
-    column-gap: 4rem;
+    column-gap: 3rem;
   }
 
   .dish__container {

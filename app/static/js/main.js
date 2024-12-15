@@ -70,28 +70,37 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+// Función genérica para manejar el envío de formularios con confirmación
+function addConfirmationHandler(formSelector, confirmMessage) {
+  const forms = document.querySelectorAll(formSelector);
+
+  forms.forEach(form => {
+    form.addEventListener('submit', function (event) {
+      const confirmDelete = confirm(confirmMessage);
+
+      if (!confirmDelete) {
+        event.preventDefault(); // Detén el envío si se cancela la confirmación
+      } else {
+        // Acciones adicionales antes de enviar el formulario
+        console.log('hola mundo')
+      }
+    });
+  });
+}
+
+// Aplicar la función genérica a distintos formularios con diferentes mensajes
 // alerta para avisar que si se elimina el plato se eliminaran todas las ordenes
 // que estén asociadas a el.
-// Selecciona todos los formularios que tienen el botón de eliminación
-// Selecciona solo los formularios de eliminación de platos
-const deleteDishForms = document.querySelectorAll('.delete-dish-form');
-
-deleteDishForms.forEach(form => {
-  form.addEventListener('submit', function (event) {
-    // Muestra la alerta de confirmación
-    const confirmDelete = confirm(
-      "¿Estás seguro de que deseas eliminar este plato? Esto también eliminará todas las órdenes relacionadas con él."
-    );
-
-    if (!confirmDelete) {
-      // Si el usuario cancela, detén el envío del formulario
-      event.preventDefault();
-    } else {
-      // Opcional: puedes realizar acciones antes de que se envíe el formulario
-      console.log('Formulario enviado para eliminar el plato con ID:', this.querySelector('input[name="dish_id"]').value);
-    }
-  });
-});
+addConfirmationHandler(
+  '.delete-user-form',
+  '¿Estás seguro de que deseas eliminar este usuario? Esto también eliminará todas las órdenes y platos relacionados con él.'
+);
+addConfirmationHandler(
+  '.delete-dish-form',
+  '¿Estás seguro de que deseas eliminar este plato? Esto también eliminará todas las órdenes relacionadas con él.'
+);
+// alerta para avisar que si se elimina el plato se eliminaran todas las ordenes
+// que estén asociadas a el.
 
 document.addEventListener("DOMContentLoaded", () => {
   const links = document.querySelectorAll(".nav__link");
